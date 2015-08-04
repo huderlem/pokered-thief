@@ -6041,8 +6041,6 @@ DayCareMBlocks: INCBIN "maps/daycarem.blk"
 
 FuchsiaHouse3Blocks: INCBIN "maps/fuchsiahouse3.blk"
 
-INCLUDE "engine/battle/experience.asm"
-
 INCLUDE "scripts/route2.asm"
 INCLUDE "scripts/route3.asm"
 INCLUDE "scripts/route4.asm"
