@@ -2,7 +2,7 @@ ItemPrices: ; 4608 (1:4608)
 	money 0     ; MASTER_BALL
 	money 1200  ; ULTRA_BALL
 	money 600   ; GREAT_BALL
-	money 200   ; POKE_BALL
+	money 200   ; THIEF_BALL
 	money 0     ; TOWN_MAP
 	money 0     ; BICYCLE
 	money 0     ; SURFBOARD

@@ -24,7 +24,7 @@ ViridianForestObject: ; 0x611da (size=127)
 	object SPRITE_BUG_CATCHER, $2, $12, STAY, LEFT, $4, BUG_CATCHER + $C8, $3
 	object SPRITE_BALL, $19, $b, STAY, NONE, $5, ANTIDOTE
 	object SPRITE_BALL, $c, $1d, STAY, NONE, $6, POTION
-	object SPRITE_BALL, $1, $1f, STAY, NONE, $7, POKE_BALL
+	object SPRITE_BALL, $1, $1f, STAY, NONE, $7, THIEF_BALL
 	object SPRITE_BUG_CATCHER, $1b, $28, STAY, NONE, $8 ; person
 
 	; warp-to

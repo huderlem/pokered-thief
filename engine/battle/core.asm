@@ -2277,7 +2277,7 @@ BagWasSelected:
 
 OldManItemList:
 	db 1 ; # items
-	db POKE_BALL, 50
+	db THIEF_BALL, 42
 	db -1
 
 DisplayPlayerBag:

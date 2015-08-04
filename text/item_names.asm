@@ -2,7 +2,7 @@ ItemNames: ; 472b (1:472b)
 	db "MASTER BALL@"
 	db "ULTRA BALL@"
 	db "GREAT BALL@"
-	db "POKé BALL@"
+	db "THIEF BALL@"
 	db "TOWN MAP@"
 	db "BICYCLE@"
 	db "?????@"

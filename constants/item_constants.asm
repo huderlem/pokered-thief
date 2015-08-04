@@ -3,7 +3,7 @@ const_value = 1
 	const MASTER_BALL   ; $01
 	const ULTRA_BALL    ; $02
 	const GREAT_BALL    ; $03
-	const POKE_BALL     ; $04
+	const THIEF_BALL    ; $04
 	const TOWN_MAP      ; $05
 	const BICYCLE       ; $06
 	const SURFBOARD     ; $07 buggy?

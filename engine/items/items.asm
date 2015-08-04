@@ -19,7 +19,7 @@ ItemUsePtrTable: ; d5e1 (3:55e1)
 	dw ItemUseBall       ; MASTER_BALL
 	dw ItemUseBall       ; ULTRA_BALL
 	dw ItemUseBall       ; GREAT_BALL
-	dw ItemUseBall       ; POKE_BALL
+	dw ItemUseBall       ; THIEF_BALL
 	dw ItemUseTownMap    ; TOWN_MAP
 	dw ItemUseBicycle    ; BICYCLE
 	dw ItemUseSurfboard  ; out-of-battle Surf effect
@@ -162,7 +162,7 @@ ItemUseBall: ; d687 (3:5687)
 	ld a,[hl]
 	cp a,MASTER_BALL
 	jp z,.BallSuccess
-	cp a,POKE_BALL
+	cp a,THIEF_BALL
 	jr z,.checkForAilments
 	ld a,200
 	cp b
@@ -263,7 +263,7 @@ ItemUseBall: ; d687 (3:5687)
 	call Multiply	; CatchRate * 100
 	ld a,[wcf91]
 	ld b,255
-	cp a,POKE_BALL
+	cp a,THIEF_BALL
 	jr z,.next11
 	ld b,200
 	cp a,GREAT_BALL

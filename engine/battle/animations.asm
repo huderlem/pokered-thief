@@ -2953,9 +2953,6 @@ BattleAnimCopyTileMapToVRAM: ; 79e0d (1e:5e0d)
 	jp Delay3
 
 TossBallAnimation: ; 79e16 (1e:5e16)
-	ld a,[W_ISINBATTLE]
-	cp a,2
-	jr z,.BlockBall ; if in trainer battle, play different animation
 	ld a,[wd11e]
 	ld b,a
 
@@ -2974,7 +2971,7 @@ TossBallAnimation: ; 79e16 (1e:5e16)
 	ld hl,.PokeBallAnimations
 	; choose which toss animation to use
 	ld a,[wcf91]
-	cp a,POKE_BALL
+	cp a,THIEF_BALL
 	ld b,TOSS_ANIM
 	jr z,.done
 	cp a,GREAT_BALL
@@ -2998,16 +2995,6 @@ TossBallAnimation: ; 79e16 (1e:5e16)
 .PokeBallAnimations: ; 79e50 (1e:5e50)
 ; sequence of animations that make up the Poké Ball toss
 	db POOF_ANIM,HIDEPIC_ANIM,SHAKE_ANIM,POOF_ANIM,SHOWPIC_ANIM
-
-.BlockBall ; 5E55
-	ld a,TOSS_ANIM
-	ld [W_ANIMATIONID],a
-	call PlayAnimation
-	ld a,SFX_FAINT_THUD
-	call PlaySound
-	ld a,BLOCKBALL_ANIM
-	ld [W_ANIMATIONID],a
-	jp PlayAnimation
 
 PlayApplyingAttackSound: ; 79e6a (1e:5e6a)
 ; play a different sound depending if move is not very effective, neutral, or super-effective
