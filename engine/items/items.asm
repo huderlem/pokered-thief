@@ -377,6 +377,12 @@ ItemUseBall: ; d687 (3:5687)
 	ld [hl],a
 .next16
 	ld a,[wcf91]
+	cp THIEF_BALL
+	jr nz, .notThiefBall
+	ld a, 1
+	ld [wStolePokemon], a
+	ld a,[wcf91]
+.notThiefBall
 	push af
 	ld a,[wEnemyMonSpecies2]
 	ld [wcf91],a
@@ -385,11 +391,6 @@ ItemUseBall: ; d687 (3:5687)
 	callab LoadEnemyMonData
 	pop af
 	ld [wcf91],a
-	cp THIEF_BALL
-	jr nz, .notThiefBall
-	ld a, 1
-	ld [wStolePokemon], a
-.notThiefBall
 	pop hl
 	pop af
 	ld [hld],a
@@ -2686,12 +2687,16 @@ SendNewMonToBox: ; e7a4 (3:67a4)
 	dec b
 	jr nz, .asm_e854
 .asm_e867
+	ld a, [wEnemyMonBoxLevel]
+	push af
 	ld a, [wEnemyMonLevel]
 	ld [wEnemyMonBoxLevel], a
 	ld hl, wEnemyMon
 	ld de, wBoxMon1
 	ld bc, wEnemyMonDVs - wEnemyMon
 	call CopyData
+	pop af
+	ld [wEnemyMonBoxLevel], a
 	ld hl, wPlayerID
 	ld a, [hli]
 	ld [de], a

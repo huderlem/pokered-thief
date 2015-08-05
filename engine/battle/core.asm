@@ -6241,8 +6241,12 @@ LoadEnemyMonData: ; 3eb01 (f:6b01)
 	ld [wEnemyMonHP], a
 	ld a, [hli]
 	ld [wEnemyMonHP + 1], a
+	ld a, [wStolePokemon]
+	and a
+	jr nz, .skip
 	ld a, [wWhichPokemon]
 	ld [wEnemyMonPartyPos], a
+.skip
 	inc hl
 	ld a, [hl]
 	ld [wEnemyMonStatus], a
