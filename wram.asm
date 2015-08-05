@@ -2879,6 +2879,9 @@ wBoxMonOT::    ds 11 * MONS_PER_BOX ; dd2a
 wBoxMonNicks:: ds 11 * MONS_PER_BOX ; de06
 wBoxMonNicksEnd:: ; dee2
 
+; New WRAM addresses
+wStolePokemon::  ds 1 ; dee2
+
 
 SECTION "Stack", WRAMX[$dfff], BANK[1]
 wStack:: ; dfff

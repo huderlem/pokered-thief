@@ -104,8 +104,14 @@ ItemUseBall: ; d687 (3:5687)
 	ld a,[W_ISINBATTLE]
 	and a
 	jp z,ItemUseNotTime ; not in battle
+	ld b, a
+	ld a, [wcf91]
+	cp THIEF_BALL
+	ld a, b
+	jr z, .allowInBattle
 	dec a
 	jp nz,ThrowBallAtTrainerMon
+.allowInBattle
 	ld a,[W_BATTLETYPE]
 	dec a
 	jr z,.UseBall
@@ -379,6 +385,11 @@ ItemUseBall: ; d687 (3:5687)
 	callab LoadEnemyMonData
 	pop af
 	ld [wcf91],a
+	cp THIEF_BALL
+	jr nz, .notThiefBall
+	ld a, 1
+	ld [wStolePokemon], a
+.notThiefBall
 	pop hl
 	pop af
 	ld [hld],a

@@ -1112,6 +1112,13 @@ _EnemyMonFaintedText:: ; 0x896c7
 	line "fainted!"
 	prompt
 
+_EnemyMonStolenText::
+	text "Enemy @"
+	TX_RAM wEnemyMonNick
+	db $0
+	line "was stolen!"
+	prompt
+
 _MoneyForWinningText:: ; 896dd (22:56dd)
 	text $52, " got ¥@"
 	TX_BCD wAmountMoneyWon, $c3

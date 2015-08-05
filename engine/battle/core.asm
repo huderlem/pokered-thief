@@ -394,6 +394,9 @@ MainInBattleLoop: ; 3c233 (f:4233)
 ; the player is neither thrashing about nor charging for an attack
 	call DisplayBattleMenu ; show battle menu
 	ret c ; return if player ran from battle
+	ld a, [wStolePokemon]
+	and a
+	jp nz, StolePokemon
 	ld a, [wEscapedFromBattle]
 	and a
 	ret nz ; return if pokedoll was used to escape from battle
@@ -555,6 +558,23 @@ MainInBattleLoop: ; 3c233 (f:4233)
 	jp z, HandleEnemyMonFainted
 	call DrawHUDsAndHPBars
 	call CheckNumAttacksLeft
+	jp MainInBattleLoop
+
+StolePokemon:
+	xor a
+	ld hl, wEnemyMonHP
+	ld [hli], a
+	ld [hl], a
+	call LoadHudAndHpBarAndStatusTilePatterns
+	; redraw player mon's back sprite
+	ld a, [wBattleMonSpecies]
+	ld [wd0b5], a
+	call GetMonHeader
+	predef LoadMonBackPic
+	ld a, $31
+	ld hl, $c405
+	call CopyUncompressedPicToHL
+	call DrawHUDsAndHPBars
 	jp MainInBattleLoop
 
 HandlePoisonBurnLeechSeed: ; 3c3bd (f:43bd)
@@ -798,6 +818,12 @@ HandleEnemyMonFainted: ; 3c525 (f:4525)
 	ld a, [hli]
 	or [hl] ; is battle mon HP zero?
 	call nz, DrawPlayerHUDAndHPBar ; if battle mon HP is not zero, draw player HD and HP bar
+	ld a, [wStolePokemon]
+	and a
+	jr z, .didntSteal
+	xor a
+	ld [wStolePokemon], a
+.didntSteal
 	ld a, [W_ISINBATTLE]
 	dec a
 	ret z ; return if it's a wild battle
@@ -888,8 +914,16 @@ FaintEnemyPokemon: ; 0x3c567
 	ld a, d
 	and a
 	ret z
+	ld a, [wStolePokemon]
+	and a
+	jr z, .fainted
+	ld hl, EnemyMonStolenText
+	call PrintText
+	jr .continue
+.fainted
 	ld hl, EnemyMonFaintedText
 	call PrintText
+.continue
 	call PrintEmptyString
 	call SaveScreenTilesToBuffer1
 	xor a
@@ -898,6 +932,10 @@ FaintEnemyPokemon: ; 0x3c567
 
 EnemyMonFaintedText: ; 0x3c63e
 	TX_FAR _EnemyMonFaintedText
+	db "@"
+
+EnemyMonStolenText:
+	TX_FAR _EnemyMonStolenText
 	db "@"
 
 EndLowHealthAlarm: ; 3c643 (f:4643)
@@ -2315,9 +2353,6 @@ UseBagItem:
 	call GBPalNormal
 	xor a
 	ld [wCapturedMonSpecies], a
-	ld a, $2
-	ld [wBattleResult], a
-	scf ; set carry
 	ret
 
 ItemsCantBeUsedHereText:
