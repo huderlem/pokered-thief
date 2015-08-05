@@ -565,6 +565,7 @@ StolePokemon:
 	ld hl, wEnemyMonHP
 	ld [hli], a
 	ld [hl], a
+	call LoadFontTilePatterns
 	call LoadHudAndHpBarAndStatusTilePatterns
 	; redraw player mon's back sprite
 	ld a, [wBattleMonSpecies]
