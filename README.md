@@ -1,14 +1,10 @@
-# Pokémon Red and Blue
+# Pokémon Thief Red
 
-This is a disassembly of Pokémon Red and Blue.
+This is a fork of the [pokered disassembly project](https://github.com/iimarckus/pokered).
 
-It builds the following roms:
-
-* Pokemon Red (UE) [S][!].gb  `md5: 3d45c1ee9abd5738df46d2bdda8b57dc`
-* Pokemon Blue (UE) [S][!].gb `md5: 50927e843568814f7ed45ec4f944bd8b`
+This is a relatively simple engine hack that allows the player to steal pokemon from enemy trainers. The player's pokemon don't gain experience, so the only way to get stronger pokemon is to catch enemy trainers' pokemon. The player also cannot catch wild pokemon.
 
 To set up the repository, see [**INSTALL.md**](INSTALL.md).
-
 
 ## See also
 
