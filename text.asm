@@ -2955,6 +2955,8 @@ _ItemUseBallText00:: ; a6729 (29:6729)
 _ItemUseBallText01:: ; a675f (29:675f)
 	text "You missed the"
 	line "#MON!"
+
+	para "Weaken it more!"
 	prompt
 
 _ItemUseBallText02:: ; a6775 (29:6775)
