@@ -376,17 +376,18 @@ LoadCopyrightAndTextBoxTiles: ; 4538 (1:4538)
 
 LoadCopyrightTiles: ; 4541 (1:4541)
 	ld de, NintendoCopyrightLogoGraphics
-	ld hl, vChars2 + $600
-	ld bc, (BANK(NintendoCopyrightLogoGraphics) << 8) + $1c
+	ld hl, $8800
+	ld bc, (BANK(NintendoCopyrightLogoGraphics) << 8) + $29
 	call CopyVideoData
-	coord hl, 2, 7
+	coord hl, 2, 5
 	ld de, CopyrightTextString
 	jp PlaceString
 
 CopyrightTextString: ; 4556 (1:4556)
-	db   $60,$61,$62,$61,$63,$61,$64,$7F,$65,$66,$67,$68,$69,$6A             ; ©'95.'96.'98 Nintendo
-	next $60,$61,$62,$61,$63,$61,$64,$7F,$6B,$6C,$6D,$6E,$6F,$70,$71,$72     ; ©'95.'96.'98 Creatures inc.
-	next $60,$61,$62,$61,$63,$61,$64,$7F,$73,$74,$75,$76,$77,$78,$79,$7A,$7B ; ©'95.'96.'98 GAME FREAK inc.
+	db   $80,$81,$82,$81,$83,$81,$84,$7F,$85,$86,$87,$88,$89,$8A             ; ©'95.'96.'98 Nintendo
+	next $80,$81,$82,$81,$83,$81,$84,$7F,$8B,$8C,$8D,$8E,$8F,$90,$91,$92     ; ©'95.'96.'98 Creatures inc.
+	next $80,$81,$82,$81,$83,$81,$84,$7F,$a0,$a1,$a2,$a3,$a4,$a5,$a6,$a7,$a8 ; ©'95.'96.'98 GAME FREAK inc.
+	next $80,$93,$94,$95,$7f,$7f,$7f,$7f,$96,$97,$98,$99,$9a,$9b,$9c ; ©2015 ShantyTown
 	db   "@"
 
 INCLUDE "data/title_mons.asm"
