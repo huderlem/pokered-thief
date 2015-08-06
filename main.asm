@@ -3719,7 +3719,15 @@ _AddPartyMon: ; f2e5 (3:72e5)
 	inc de
 	ld a, [hli]       ; catch rate (held item in gen 2)
 	ld [de], a
+
+	ld a, [W_ISINBATTLE]
+	and a ; is this a wild mon caught in battle?
+	jr z, .notBattle
+	ld hl, wEnemyMonMoves
+	jr .writeMoves
+.notBattle
 	ld hl, W_MONHMOVES
+.writeMoves
 	ld a, [hli]
 	inc de
 	push de

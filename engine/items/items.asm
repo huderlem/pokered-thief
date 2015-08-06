@@ -387,6 +387,8 @@ ItemUseBall: ; d687 (3:5687)
 	jr nz, .notThiefBall
 	ld a, 1
 	ld [wStolePokemon], a
+	ld a, [wEnemyMonPartyPos]
+	ld [wWhichPokemon], a
 	ld a,[wcf91]
 .notThiefBall
 	push af
