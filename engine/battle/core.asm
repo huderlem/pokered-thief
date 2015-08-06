@@ -221,6 +221,7 @@ SetScrollXForSlidingPlayerBodyLeft: ; 3c110 (f:4110)
 
 StartBattle: ; 3c11e (f:411e)
 	xor a
+	ld [wStolePokemon], a
 	ld [wPartyGainExpFlags], a
 	ld [wPartyFoughtCurrentEnemyFlags], a
 	ld [wActionResultOrTookBattleTurn], a
