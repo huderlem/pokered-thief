@@ -1,240 +1,270 @@
-LoadShootingStarGraphics: ; 70000 (1c:4000)
-	ld a, $f9
-	ld [rOBP0], a
-	ld a, $a4
-	ld [rOBP1], a
-	ld de, AnimationTileset2 + $30 ; star tile (top left quadrant)
-	ld hl, vChars1 + $200
-	ld bc, (BANK(AnimationTileset2) << 8) + $01
-	call CopyVideoData
-	ld de, AnimationTileset2 + $130 ; star tile (bottom left quadrant)
-	ld hl, vChars1 + $210
-	ld bc, (BANK(AnimationTileset2) << 8) + $01
-	call CopyVideoData
-	ld de, FallingStar
-	ld hl, vChars1 + $220
-	ld bc, (BANK(FallingStar) << 8) + $01
-	call CopyVideoData
-	ld hl, GameFreakLogoOAMData
-	ld de, wOAMBuffer + $60
-	ld bc, $40
-	call CopyData
-	ld hl, GameFreakShootingStarOAMData
-	ld de, wOAMBuffer
-	ld bc, $10
-	jp CopyData
-
-AnimateShootingStar: ; 70044 (1c:4044)
-	call LoadShootingStarGraphics
-	ld a, SFX_SHOOTING_STAR
-	call PlaySound
-
-; Move the big star down and left across the screen.
-	ld hl, wOAMBuffer
-	ld bc, $a004
-.bigStarLoop
-	push hl
-	push bc
-.bigStarInnerLoop
-	ld a, [hl] ; Y
-	add 4
-	ld [hli], a
-	ld a, [hl] ; X
-	add -4
-	ld [hli], a
-	inc hl
-	inc hl
-	dec c
-	jr nz, .bigStarInnerLoop
-	ld c, 1
-	call CheckForUserInterruption
-	pop bc
-	pop hl
-	ret c
-	ld a, [hl]
-	cp 80
-	jr nz, .next
-	jr .bigStarLoop
-.next
-	cp b
-	jr nz, .bigStarLoop
-
-; Clear big star OAM.
-	ld hl, wOAMBuffer
-	ld c, 4
-	ld de, 4
-.clearOAMLoop
-	ld [hl], 160
-	add hl, de
-	dec c
-	jr nz, .clearOAMLoop
-
-; Make Gamefreak logo flash.
-	ld b, 3
-.flashLogoLoop
-	ld hl, rOBP0
-	rrc [hl]
-	rrc [hl]
-	ld c, 10
-	call CheckForUserInterruption
-	ret c
-	dec b
-	jr nz, .flashLogoLoop
-
-; Copy 24 instances of the small stars OAM data.
-; Note that their coordinates put them off-screen.
-	ld de, wOAMBuffer
-	ld a, 24
-.initSmallStarsOAMLoop
-	push af
-	ld hl, SmallStarsOAM
+InitShantyTownIntroAnimation: ; 70000 (1c:4000)
+	ld b, 6
+	call GoPAL_SET
+	ld a, %11100100
+ 	ld [rOBP0], a ; $FF00+$48
+ 	ld [rOBP1], a ; $FF00+$49
+ 	ld hl, wOAMBuffer ; y position
 	ld bc, 4
-	call CopyData
-	pop af
-	dec a
-	jr nz, .initSmallStarsOAMLoop
+	ld a, $50
+	ld [hl], a
+	add hl, bc
+	ld [hl], a
+	add hl, bc
+	add 8
+	ld [hl], a
+	add hl, bc
+	ld [hl], a
+	ret
 
-; Animate the small stars falling from the Gamefreak logo.
+PlayShantyTownAnimation: ; 70044 (1c:4044)
+	ld a, SFX_SHOOTING_STAR  ; if you remove/change this line, it causes a seg fault. c'mon, rgbds...
+	call InitShantyTownIntroAnimation
+	; Roll pokeball to the right
 	xor a
-	ld [wMoveDownSmallStarsOAMCount], a
-	ld hl, SmallStarsWaveCoordsPointerTable
-	ld c, 6
-.smallStarsLoop
-	ld a, [hli]
-	ld e, a
-	ld a, [hli]
-	ld d, a
-	push bc
-	push hl
-	ld hl, wOAMBuffer + $50
-	ld c, 4
-.smallStarsInnerLoop ; introduce new wave of 4 small stars OAM entries
-	ld a, [de]
-	cp $ff
-	jr z, .next2
-	ld [hli], a ; Y
-	inc de
-	ld a, [de]
-	ld [hli], a ; X
-	inc de
-	inc hl
-	inc hl
-	dec c
-	jr nz, .smallStarsInnerLoop
-	ld a, [wMoveDownSmallStarsOAMCount]
-	cp 24
-	jr z, .next2
-	add 6 ; should be 4, but the extra 2 aren't visible on screen
-	ld [wMoveDownSmallStarsOAMCount], a
-.next2
-	call MoveDownSmallStars
-	push af
-
-; shift the existing OAM entries down to make room for the next wave
-	ld hl, wOAMBuffer + $10
-	ld de, wOAMBuffer
-	ld bc, $50
-	call CopyData
-
-	pop af
-	pop hl
-	pop bc
-	ret c
-	dec c
-	jr nz, .smallStarsLoop
-	and a
+	ld [wWhichPokemon], a ; ball animation frame id
+	ld [W_NUMSAFARIBALLS], a ; frame counter
+	ld a, 8
+	ld [W_FIRST_NEW_BYTE], a ; ball x pixel position
+.rollRightLoop
+	call LoadSpinningBallOAMTiles
+	call MoveSpinningBall
+	call RevealLetter
+	call DelayFrame
+	ld a, [W_NUMSAFARIBALLS]
+	inc a
+	ld [W_NUMSAFARIBALLS], a
+	bit 0, a
+	jr z, .moveBall
+	; advance frame
+	ld a, [wWhichPokemon]
+	inc a
+	cp 8
+	jr c, .noOverflow
+	xor a
+.noOverflow
+	ld [wWhichPokemon], a
+.moveBall
+	ld a, $be
+ 	call PlaySound
+ 	ld a, [W_FIRST_NEW_BYTE]
+	add 2
+	ld [W_FIRST_NEW_BYTE], a
+	cp 180
+	jr c, .rollRightLoop
+.doneRollingRight
+	ld c, $20
+	call DelayFrames
+	; roll pokeball to the left
+	ld hl, wOAMBuffer ; y position
+	ld bc, 4
+	ld a, $60
+	ld [hl], a
+	add hl, bc
+	ld [hl], a
+	add hl, bc
+	add 8
+	ld [hl], a
+	add hl, bc
+	ld [hl], a
+ 	xor a
+ 	ld [wWhichPokemon], a ; ball animation frame id
+	ld [W_NUMSAFARIBALLS], a ; frame counter
+	ld a, 180
+	ld [W_FIRST_NEW_BYTE], a ; ball x pixel position
+	ld a, $bd
+	call PlaySound
+.rollLeftLoop
+	call LoadSpinningBallOAMTiles
+	call MoveSpinningBall
+	call RevealPresentsLetter
+	call DelayFrame
+	ld a, [W_NUMSAFARIBALLS]
+	inc a
+	ld [W_NUMSAFARIBALLS], a
+	; advance frame
+	ld a, [wWhichPokemon]
+	dec a
+ 	cp $ff
+ 	jr nz, .noOverflow2
+	ld a, 7
+.noOverflow2
+	ld [wWhichPokemon], a
+	ld a, [W_FIRST_NEW_BYTE]
+	sub 4
+	ld [W_FIRST_NEW_BYTE], a
+	cp $f0
+	jr c, .rollLeftLoop
+	; done
+	ld c, $30
+	call DelayFrames
 	ret
 
-SmallStarsOAM: ; 700ee (1c:40ee)
-	db $00,$00,$A2,$90
+LoadSpinningBallOAMTiles:
+	ld a, [wWhichPokemon]
+	add a ; multiply by 2
+	ld b, a
+	ld a, $80
+	add b
+	ld bc, 4
+	ld hl, wOAMBuffer + 2 ; tile id
+	ld [hl], a
+	add hl, bc
+	inc a
+	ld [hl], a
+	add hl, bc
+	add $f
+	ld [hl], a
+	add hl, bc
+	inc a
+	ld [hl], a
+ 	ret
 
-SmallStarsWaveCoordsPointerTable: ; 700f2 (1c:40f2)
-	dw SmallStarsWave1Coords
-	dw SmallStarsWave2Coords
-	dw SmallStarsWave3Coords
-	dw SmallStarsWave4Coords
-	dw SmallStarsEmptyWave
-	dw SmallStarsEmptyWave
+MoveSpinningBall:
+	ld a, [W_FIRST_NEW_BYTE]
+	ld hl, wOAMBuffer + 1 ; x position
+	sub 8
+	ld bc, 4
+	ld [hl], a
+	add hl, bc
+	add 8
+	ld [hl], a
+	add hl, bc
+	sub 8
+	ld [hl], a
+	add hl, bc
+	add 8
+	ld [hl], a
+	ret
 
-; The stars that fall from the Gamefreak logo come in 4 waves of 4 OAM entries.
-; These arrays contain the Y and X coordinates of each OAM entry.
-
-SmallStarsWave1Coords: ; 700fe (1c:40fe)
-	db $68,$30
-	db $68,$40
-	db $68,$58
-	db $68,$78
-
-SmallStarsWave2Coords: ; 70106 (1c:4106)
-	db $68,$38
-	db $68,$48
-	db $68,$60
-	db $68,$70
-
-SmallStarsWave3Coords: ; 7010e (1c:410e)
-	db $68,$34
-	db $68,$4C
-	db $68,$54
-	db $68,$64
-
-SmallStarsWave4Coords: ; 70116 (1c:4116)
-	db $68,$3C
-	db $68,$5C
-	db $68,$6C
-	db $68,$74
-
-SmallStarsEmptyWave: ; 7011e (1c:411e)
-	db $FF
-
-MoveDownSmallStars: ; 7011f (1c:411f)
-	ld b, 8
-.loop
-	ld hl, wOAMBuffer + $5c
-	ld a, [wMoveDownSmallStarsOAMCount]
-	ld de, -4
+RevealLetter:
+	ld a, [W_FIRST_NEW_BYTE] ; x position
+	cp $20
+	ret c
+	sub $20
+	cp $68
+	ret nc
+	srl a
+	srl a
+	srl a
 	ld c, a
-.innerLoop
-	inc [hl] ; Y
-	add hl, de
-	dec c
-	jr nz, .innerLoop
+	jp DrawLetterInShantyTown
 
-; Toggle the palette so that the lower star in the small stars tile blinks in
-; and out.
-	ld a, [rOBP1]
-	xor %10100000
-	ld [rOBP1], a
+DrawLetterInShantyTown:
+; c = letter id
+	ld a, c
+	add a
+	add c ; multiply by three
+	ld c, a
+	ld b, 0
+	ld hl, ShantyTownLetters
+	add hl, bc ; hl points to entry in ShantyTownLetters
+.waitForHBlank
+    ld a, [$ff41]
+    and $3
+    jr nz, .waitForHBlank
+    ld a, [hli]
+    ld e, a
+    ld a, [hli]
+    ld d, a
+    ld a, [hl]
+    ld [de], a
+    ld hl, $0014
+    add hl, de
+    add $10
+    ld [hl], a
+    ret
 
-	ld c, 3
-	call CheckForUserInterruption
-	ret c
-	dec b
-	jr nz, .loop
-	ret
+ShantyTownLetters:
+	dw $c443
+	db $a0
 
-GameFreakLogoOAMData: ; 70140 (1c:4140)
-	db $48,$50,$8D,$00
-	db $48,$58,$8E,$00
-	db $50,$50,$8F,$00
-	db $50,$58,$90,$00
-	db $58,$50,$91,$00
-	db $58,$58,$92,$00
-	db $60,$30,$80,$00
-	db $60,$38,$81,$00
-	db $60,$40,$82,$00
-	db $60,$48,$83,$00
-	db $60,$50,$93,$00
-	db $60,$58,$84,$00
-	db $60,$60,$85,$00
-	db $60,$68,$83,$00
-	db $60,$70,$81,$00
-	db $60,$78,$86,$00
+	dw $c444
+	db $a1
 
-GameFreakShootingStarOAMData: ; 70180 (1c:4180)
-	db $00,$A0,$A0,$10
-	db $00,$A8,$A0,$30
-	db $08,$A0,$A1,$10
-	db $08,$A8,$A1,$30
+	dw $c445
+	db $a2
 
-FallingStar: ; 70190 (1c:4190)
-	INCBIN "gfx/falling_star.2bpp"
+	dw $c446
+	db $a3
+
+	dw $c447
+	db $a4
+
+	dw $c448
+	db $a5
+
+	dw $c449
+	db $a6
+
+	dw $c44a
+	db $a7
+
+	dw $c44b
+	db $a8
+
+	dw $c44c
+	db $a9
+
+	dw $c44d
+	db $aa
+
+	dw $c44e
+	db $ab
+
+	dw $c44f
+	db $ac
+
+RevealPresentsLetter:
+	ld a, [W_FIRST_NEW_BYTE] ; x position
+	cp $56
+ 	ret c
+
+	sub $56
+	cp $30
+	ret nc
+	srl a
+	srl a
+	srl a
+	ld c, a
+	jp DrawLetterInPresents
+
+DrawLetterInPresents:
+	; c = letter id
+	ld a, c
+	add a
+	add c ; multiply by three
+	ld c, a
+	ld b, 0
+	ld hl, PresentsLetters
+	add hl, bc ; hl points to entry in PresentsLetters
+.waitForHBlank
+    ld a, [$ff41]
+    and $3
+    jr nz, .waitForHBlank
+    ld a, [hli]
+    ld e, a
+    ld a, [hli]
+    ld d, a
+    ld a, [hl]
+    ld [de], a
+    ret
+
+PresentsLetters:
+	dw $c472
+	db $ad
+
+	dw $c473
+	db $ae
+
+	dw $c474
+	db $af
+
+	dw $c475
+	db $bd
+
+	dw $c476
+	db $be
+
+	dw $c477
+	db $bf

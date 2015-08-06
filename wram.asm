@@ -2880,6 +2880,7 @@ wBoxMonNicks:: ds 11 * MONS_PER_BOX ; de06
 wBoxMonNicksEnd:: ; dee2
 
 ; New WRAM addresses
+W_FIRST_NEW_BYTE::
 wStolePokemon::  ds 1 ; dee2
 
 

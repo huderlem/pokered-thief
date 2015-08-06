@@ -143,6 +143,7 @@ ENDC
 	call TitleScreenCopyTileMapToVRAM
 	ld b, $6
 	call GoPAL_SET
+	call GBFadeInFromWhite
 	call GBPalNormal
 	ld a, %11100100
 	ld [rOBP0], a
