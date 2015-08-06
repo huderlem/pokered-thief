@@ -3130,6 +3130,14 @@ _MonCannotLearnMachineMoveText:: ; a6a6e (29:6a6e)
 	text "."
 	prompt
 
+_CatchingNotAllowedText::
+	text "OAK: ", $52, "!"
+	line "You're only"
+	cont "allowed to steal"
+	cont "#MON from"
+	cont "trainers!"
+	prompt
+
 _ItemUseNotTimeText:: ; a6aa6 (29:6aa6)
 	text "OAK: ", $52, "!"
 	line "This isn't the"

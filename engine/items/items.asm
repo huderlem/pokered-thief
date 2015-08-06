@@ -100,10 +100,16 @@ ItemUsePtrTable: ; d5e1 (3:55e1)
 	dw ItemUsePPRestore  ; ELIXER
 	dw ItemUsePPRestore  ; MAX_ELIXER
 
+CantCatchWildMons:
+	ld hl, CatchingNotAllowedText
+	jp ItemUseFailed
+
 ItemUseBall: ; d687 (3:5687)
 	ld a,[W_ISINBATTLE]
 	and a
 	jp z,ItemUseNotTime ; not in battle
+	cp 1
+	jp z, CantCatchWildMons
 	ld b, a
 	ld a, [wcf91]
 	cp THIEF_BALL
@@ -2240,6 +2246,10 @@ ItemUseFailed: ; e5b9 (3:65b9)
 	xor a
 	ld [wActionResultOrTookBattleTurn],a ; item use failed
 	jp PrintText
+
+CatchingNotAllowedText:
+	TX_FAR _CatchingNotAllowedText
+	db "@"
 
 ItemUseNotTimeText: ; e5c0 (3:65c0)
 	TX_FAR _ItemUseNotTimeText
