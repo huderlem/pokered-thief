@@ -1,7 +1,7 @@
 ItemNames: ; 472b (1:472b)
 	db "MASTER BALL@"
-	db "ULTRA BALL@"
-	db "GREAT BALL@"
+	db "BURGLER BALL@"
+	db "ROBBER BALL@"
 	db "THIEF BALL@"
 	db "TOWN MAP@"
 	db "BICYCLE@"

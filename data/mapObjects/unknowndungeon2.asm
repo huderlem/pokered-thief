@@ -13,7 +13,7 @@ UnknownDungeon2Object: ; 0x45e14 (size=73)
 
 	db $3 ; objects
 	object SPRITE_BALL, $1d, $9, STAY, NONE, $1, PP_UP
-	object SPRITE_BALL, $4, $f, STAY, NONE, $2, THIEF_BALL
+	object SPRITE_BALL, $4, $f, STAY, NONE, $2, ULTRA_BALL
 	object SPRITE_BALL, $d, $6, STAY, NONE, $3, FULL_RESTORE
 
 	; warp-to

@@ -110,14 +110,6 @@ ItemUseBall: ; d687 (3:5687)
 	jp z,ItemUseNotTime ; not in battle
 	cp 1
 	jp z, CantCatchWildMons
-	ld b, a
-	ld a, [wcf91]
-	cp THIEF_BALL
-	ld a, b
-	jr z, .allowInBattle
-	dec a
-	jp nz,ThrowBallAtTrainerMon
-.allowInBattle
 	ld a,[W_BATTLETYPE]
 	dec a
 	jr z,.UseBall
@@ -382,15 +374,11 @@ ItemUseBall: ; d687 (3:5687)
 	ld a,[wEnemyMonDVs + 1]
 	ld [hl],a
 .next16
-	ld a,[wcf91]
-	cp THIEF_BALL
-	jr nz, .notThiefBall
 	ld a, 1
 	ld [wStolePokemon], a
 	ld a, [wEnemyMonPartyPos]
 	ld [wWhichPokemon], a
 	ld a,[wcf91]
-.notThiefBall
 	push af
 	ld a,[wEnemyMonSpecies2]
 	ld [wcf91],a
