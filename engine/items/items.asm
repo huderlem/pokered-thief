@@ -376,6 +376,8 @@ ItemUseBall: ; d687 (3:5687)
 .next16
 	ld a, 1
 	ld [wStolePokemon], a
+	ld a, [wWhichPokemon]
+	push af
 	ld a, [wEnemyMonPartyPos]
 	ld [wWhichPokemon], a
 	ld a,[wcf91]
@@ -387,6 +389,8 @@ ItemUseBall: ; d687 (3:5687)
 	callab LoadEnemyMonData
 	pop af
 	ld [wcf91],a
+	pop af
+	ld [wWhichPokemon], a
 	pop hl
 	pop af
 	ld [hld],a
