@@ -98,15 +98,11 @@ _TM42NoRoomText:: ; a46d7 (29:46d7)
 	done
 
 _ViridianCityText_1920a:: ; a46f9 (29:46f9)
-	text "Ahh, I've had my"
-	line "coffee now and I"
-	cont "feel great!"
+	text "I can't teach you"
+	line "how to catch"
+	cont "#MON."
 
-	para "Sure you can go"
-	line "through!"
-
-	para "Are you in a"
-	line "hurry?"
+	para "Move along now."
 	done
 
 _ViridianCityText_1920f:: ; a4754 (29:4754)

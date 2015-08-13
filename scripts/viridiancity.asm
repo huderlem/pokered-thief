@@ -269,27 +269,6 @@ TM42NoRoomText: ; 191da (6:51da)
 	db "@"
 
 ViridianCityText7: ; 191df (6:51df)
-	TX_ASM
-	ld hl, ViridianCityText_1920a
-	call PrintText
-	ld c, 2
-	call DelayFrames
-	call YesNoChoice
-	ld a, [wCurrentMenuItem]
-	and a
-	jr z, .asm_42f68
-	ld hl, ViridianCityText_1920f
-	call PrintText
-	ld a, $1
-	ld [W_VIRIDIANCITYCURSCRIPT], a
-	jr .asm_2413a
-.asm_42f68
-	ld hl, ViridianCityText_19214
-	call PrintText
-.asm_2413a
-	jp TextScriptEnd
-
-ViridianCityText_1920a: ; 1920a (6:520a)
 	TX_FAR _ViridianCityText_1920a
 	db "@"
 
